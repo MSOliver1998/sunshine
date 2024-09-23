@@ -1,9 +1,10 @@
 import tkinter as tk
 from functions import *
-from database.crud import *
+from database.tables.produtos import *
 
 def remover_produto(root,lista,prod,label_total):
-    frame_produtos.destroy()
+    for widget in root.winfo_children():
+        widget.destroy()
     indice=find_index(lista,'nome',prod)
     if len(lista)>0:
         lista.pop(indice)
@@ -13,16 +14,18 @@ def remover_produto(root,lista,prod,label_total):
         listar_produtos(root,lista,label_total)
 
 def adicionar_produto(root,lista,prod,label_total):
+    for widget in root.winfo_children():
+        widget.destroy()
     indice=find_index(lista,'nome',prod)
-    frame_produtos.destroy()
     lista[indice]['quantidade']+=1
     preco=checar_valor_database(lista[indice]['nome'],lista[indice]['quantidade'])
     lista[indice]['preço']=preco
     listar_produtos(root,lista,label_total)
 
 def diminuir_produto(root,lista,prod,label_total):
+    for widget in root.winfo_children():
+        widget.destroy()
     indice=find_index(lista,'nome',prod)
-    frame_produtos.destroy()
     quantidade=lista[indice]['quantidade']
     if quantidade >1:
         lista[indice]['quantidade']-=1
@@ -34,8 +37,9 @@ def diminuir_produto(root,lista,prod,label_total):
 
 def listar_produtos(root,lista,label_total):
     soma=0.00
-    global frame_produtos
-    frame_produtos=tk.Frame(root,width=300,height=400)  
+    for widget in root.winfo_children():
+        widget.destroy()
+    frame_produtos=root 
     if len(lista)>0:
         for index,item in enumerate(lista):
             produto=item['nome']

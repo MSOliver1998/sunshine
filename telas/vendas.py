@@ -1,41 +1,46 @@
 import tkinter as tk
-from database.produtos import produtos as dt
-from database.crud import *
+from database.tables.produtos import *
 from colors import vendas
-from tkinter import ttk
 from functions import *
 from lista import *
-from testes import *
+from widgets.menu_option import *
+from widgets.options import options
 
-def finalizar_venda(lista,frame,total):
-
-    def valor_do_sinal():
-        contato=input_contato.get()
-        sinal=int(input_sinal.get())
-        return {'sinal':sinal,'contato':contato}
+def finalizar_venda(frame,lista):
 
     total=0.00
     for item in lista:
-        total+= (item['quantidade']*item['preço'])/2
+        total+=item['quantidade']*item['preço']
+
+    def gerar_pedido():
+        contato=input_contato.get()
+        nome=input_nome.get()
+        sinal=float(input_sinal.get())
+        pedido={'sinal':sinal,'nome':nome,'contato':contato,"produtos":lista[:],'total':total}
+        for widgets in frame.winfo_children():
+            widgets.destroy()
+        lista.clear()
+        return pedido
 
     root=tk.Tk()
     root.geometry('300x300')
     root.title('finalizar venda')
-
     label_recomendado_1=tk.Label(root,text='Recomendado')
-    label_recomendado=tk.Label(root,text=f'R$: {total:.2f}')    
+    label_recomendado=tk.Label(root,text=f'R$: {total/2:.2f}')    
     label_sinal=tk.Label(root,text='Sinal')
-    input_sinal=tk.Entry(root)
-    label_resta=tk.Label(root,text='Resta')
-    label_contato=tk.Label(root,text='contato')
+    input_sinal=tk.Entry(root,width=8)
+    label_nome=tk.Label(root,text='Nome')
+    input_nome=tk.Entry(root)
+    label_contato=tk.Label(root,text='Contato')
     input_contato=tk.Entry(root)
-    button_confirmar=tk.Button(root,text='Confirmar',background='green', command= lambda: (criar_pedido(root,lista,valor_do_sinal()),listar_produtos(frame,[],total)))
+    button_confirmar=tk.Button(root,text='Confirmar',background='green', command= lambda: (criar_pedido(root,**gerar_pedido())))
 
     label_recomendado_1.grid(row=0,column=0)
     label_recomendado.grid(row=1,column=0)
     label_sinal.grid(row=0,column=1)
     input_sinal.grid(row=1,column=1)
-    label_resta.grid(row=0,column=2)
+    label_nome.grid(row=0,column=2)
+    input_nome.grid(row=1,column=2)
     label_contato.grid(row=0,column=3)
     input_contato.grid(row=1,column=3)
     button_confirmar.grid(row=2,column=0)
@@ -50,9 +55,12 @@ def calcular_total(lista,frame_total):
 
 def frame_vendas(root):
     total=0.00
-    def selecionar_opcao(label_total):
+    global options
+
+    def selecionar_opcao(label_total,frame):
         quantidade = entry_unidades.get()
         prod=opcao_selecionada.get()
+        opcao_selecionada.set(opcao_selecionada.get())
         preco=checar_valor_database(prod,quantidade)
         if(len(lista)==0):
             lista.append({
@@ -78,20 +86,17 @@ def frame_vendas(root):
         listar_produtos(frame,lista,label_total)
 
     lista=[]
-    opcoes = ["selecionar"]
 
-    for i in dt:
-        opcoes.append(i['nome'])
-
-    opcao_selecionada = tk.StringVar()
-    opcao_selecionada.set(opcoes[0])
     frame=tk.Frame(root,background=vendas,height=600,width=600)
+    menu,opcao_selecionada=menu_option(frame)
     label_unidades=tk.Label(frame,text="unidades",background=vendas)
     entry_unidades=tk.Entry(frame,width=10)
     label_produto=tk.Label(frame,text="produto",width=20)
-    menu_opcoes = ttk.OptionMenu(frame, opcao_selecionada, *opcoes)
-    botao_adicionar=tk.Button(frame,text='+',background="#7CFC00",foreground="#98FB98",command=lambda: (selecionar_opcao(label_total)))
-    botao_finalizar=tk.Button(frame,text="finalizar",background='#B0E0E6',command=lambda:finalizar_venda(lista,frame,label_total))
+    menu_opcoes = menu
+    options.append(menu_opcoes)
+    frame_lista_de_produtos=tk.Frame(frame)
+    botao_adicionar=tk.Button(frame,text='+',background="#7CFC00",foreground="#98FB98",command=lambda: (selecionar_opcao(label_total,frame_lista_de_produtos)))
+    botao_finalizar=tk.Button(frame,text="finalizar",background='#B0E0E6',command=lambda: finalizar_venda(frame_lista_de_produtos,lista))
     label_total=tk.Label(frame,text=f'R$: {total:.2f}')
 
     quantidade=tk.Label(frame,text='QTD')

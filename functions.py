@@ -1,3 +1,5 @@
+from database.tables.pedidos import *
+
 def find_index(list,key,value):
     id=-1
     for index,val in enumerate(list):
@@ -13,25 +15,25 @@ def find_by_name(list,nome):
             return item
     return ''
 
-def criar_pedido(root,lista,sinal):
-    contato=sinal['contato']
-    print(contato)
-    sin=sinal['sinal']
+
+def criar_pedido(root,**pedido):
+    create_pedido(**pedido)
+    contato=pedido['contato']
+    sinal_pago=pedido['sinal']
     import os
 
     pasta='pedidos'
     total=0.00
     caminho_arquivo = os.path.join(pasta, f'Sunshine-{contato}.txt')
     with open(caminho_arquivo, 'a') as arquivo:
-        for item in lista:
+        for item in pedido['produtos']:
             total+= (item['quantidade']*item['preço'])
 
-        for item in lista:
-            print(lista)
+        for item in pedido['produtos']:
             arquivo.write(f'{item['quantidade']} - {item['nome']} - {item['preço']:.2f} - {(item['preço']*item['quantidade']):.2f}')
             arquivo.write('\n')
-        
-        arquivo.write(f'| Total R$:{total:.2f} | Sinal R$: {sin:.2f} | resta: {total-sin:.2f} | \n')
+    
+        arquivo.write(f'| Total R$:{total:.2f} | Sinal R$: {sinal_pago:.2f} | resta: {total-sinal_pago:.2f} | \n')
     
     root.destroy()
 

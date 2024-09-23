@@ -4,6 +4,7 @@ from telas.vendas import frame_vendas
 from telas.compras import frame_compras
 from telas.pedidos import frame_pedidos
 from telas.relatorios import frame_relatorios
+from telas.catalogo import frame_catalogo
 
 def tela(root):
     frame_menus=tk.Frame(root,width=600)
@@ -11,13 +12,15 @@ def tela(root):
     compras=tk.Button(frame_menus,text="compras",background=colors.compras,command=lambda:f2.tkraise())
     pedidos=tk.Button(frame_menus,text="pedidos",background=colors.pedidos,command=lambda:f3.tkraise())
     relatorios=tk.Button(frame_menus,text="relatorios",background=colors.relatorios,command=lambda:f4.tkraise())
+    catalogo=tk.Button(frame_menus,text='catalogo',background=colors.catalogo,command=lambda:f5.tkraise())
 
     f1 = frame_vendas(root)
     f2 = frame_compras(root)
     f3 = frame_pedidos(root)
     f4 = frame_relatorios(root)
+    f5=  frame_catalogo(root)
 
-    for frame in (f1, f2, f3, f4):
+    for frame in (f1, f2, f3, f4,f5):
         frame.grid(row=1, column=0,columnspan=4, sticky='news')
 
     f1.tkraise()
@@ -27,5 +30,6 @@ def tela(root):
     compras.grid(column=1,row=0)
     pedidos.grid(column=2,row=0)
     relatorios.grid(column=3,row=0)
+    catalogo.grid(column=4,row=0)
     return frame_menus
     
