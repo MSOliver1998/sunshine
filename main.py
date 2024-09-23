@@ -1,7 +1,7 @@
 import tkinter as tk
 from tela import tela
-from database.tables.createTables import create_tables
-from database.tables.produtos import select_all
+from database.tables._createTables import create_tables
+from database.tables.catalogo import select_all
 
 def root():
     root= tk.Tk()

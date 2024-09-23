@@ -1,6 +1,6 @@
 import tkinter as tk
 from functions import *
-from database.tables.produtos import *
+from database.tables.catalogo import *
 
 def remover_produto(root,lista,prod,label_total):
     for widget in root.winfo_children():

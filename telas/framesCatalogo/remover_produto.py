@@ -1,5 +1,5 @@
 import tkinter as tk
-from database.tables.produtos import del_prod, lista_de_produtos
+from database.tables.catalogo import del_prod, lista_de_produtos
 from widgets.menu_option import menu_option
 from widgets.options import *
 

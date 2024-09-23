@@ -1,11 +1,11 @@
 from database.postgres import connection
 lista_de_produtos=[]
 
-def create_table_produtos():
+def create_table_catalogo():
     cursor=connection.cursor()
 
     create_table_query = '''
-        CREATE TABLE IF NOT EXISTS produtos (
+        CREATE TABLE IF NOT EXISTS catalogo (
             id SERIAL PRIMARY KEY,
             nome VARCHAR(255) NOT NULL,
             preco FLOAT NOT NULL
@@ -35,7 +35,7 @@ def add_prod(prod):
 
     # Adicionando itens à tabela de produtos
     insert_produtos_query = '''
-        INSERT INTO produtos (nome, preco) VALUES (%s, %s) RETURNING id;
+        INSERT INTO catalogo (nome, preco) VALUES (%s, %s) RETURNING id;
     '''
 
     insert_desconto_query='''
@@ -56,7 +56,6 @@ def add_prod(prod):
     connection.commit()
     cursor.close()
     lista_de_produtos.append(prod)
-    print(lista_de_produtos)
 
 def select_all():
 
@@ -64,7 +63,7 @@ def select_all():
 
     cursor=connection.cursor()
 
-    cursor.execute('SELECT * FROM produtos')
+    cursor.execute('SELECT * FROM catalogo')
     produtos=cursor.fetchall()
 
     cursor.close()
@@ -90,7 +89,7 @@ def edit_prod(id,produto):
     novo_preco=produto['preço']
     cursor = connection.cursor()
 
-    update_query = '''UPDATE nome_da_tabela SET nome = %s, preco = %s WHERE id = %s'''
+    update_query = '''UPDATE catalogo SET nome = %s, preco = %s WHERE id = %s'''
 
     cursor.execute(update_query, (novo_nome, novo_preco, id))
     connection.commit()
@@ -100,7 +99,7 @@ def edit_prod(id,produto):
 
 def del_prod(prod_nome):
     global lista_de_produtos
-    query="SELECT id FROM produtos WHERE nome = %s"
+    query="SELECT id FROM catalogo WHERE nome = %s"
     cursor=connection.cursor()
     cursor.execute(query,(prod_nome,))
     produtos_encontrados=cursor.fetchall()
@@ -112,5 +111,5 @@ def del_prod(prod_nome):
     for produto in produtos_encontrados:
         id=produto[0]
         cursor.execute(f"DELETE FROM descontos WHERE prod_id={id}")
-        cursor.execute(f'DELETE FROM produtos WHERE id={id}') 
+        cursor.execute(f'DELETE FROM catalogo WHERE id={id}') 
     connection.commit()

@@ -1,5 +1,5 @@
 import tkinter as tk
-from database.tables.produtos import *
+from database.tables.catalogo import *
 from widgets.options import *
 
 descontos_entries=[]

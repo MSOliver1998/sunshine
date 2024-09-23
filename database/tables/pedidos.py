@@ -1,5 +1,6 @@
 from database.postgres import connection
-from database.tables.produtos import lista_de_produtos
+from database.tables.catalogo import lista_de_produtos
+from database.tables.compras import inserir_na_lista
 lista_de_pedidos=[]
 
 def create_table_pedidos():
@@ -11,8 +12,8 @@ def create_table_pedidos():
             id SERIAL PRIMARY KEY,
             contato VARCHAR(12),
             nome VARCHAR(255) NOT NULL,
-            total FLOAT NOT NULL,
-            sinal_pago FLOAT NOT NULL, 
+            total DECIMAL(10, 2),
+            sinal_pago DECIMAL(10, 2), 
             created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
             updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW() 
         );
@@ -32,12 +33,16 @@ def create_table_items():
             quantidade INTEGER NOT NULL,
             preco NUMERIC(10, 2) NOT NULL,
             FOREIGN KEY (id_pedido) REFERENCES pedidos (id) ON DELETE CASCADE,
-            FOREIGN KEY (id_produto) REFERENCES produtos (id) ON DELETE CASCADE
+            FOREIGN KEY (id_produto) REFERENCES catalogo (id) ON DELETE CASCADE
         );
     '''
     cursor.execute(create_table_query)
     connection.commit()
 
+
+def create_tables_vendas():
+    create_table_pedidos()
+    create_table_items()
 
 def create_pedido(**pedido):
     global lista_de_pedidos
@@ -75,9 +80,9 @@ def create_pedido(**pedido):
                 cursor.execute(create_items_query,(id_pedido,prod_id,item['quantidade'],item['preço']))
                 connection.commit()
                 new_item=cursor.fetchone()
+                inserir_na_lista(new_item[2],new_item[3])
                 pd['produtos'].append(new_item)
             
-    print('pd:', pd)
     lista_de_pedidos.insert(0,pd)
 
 def receber_sinal(id,valor):

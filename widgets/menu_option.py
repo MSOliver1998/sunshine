@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
-from database.tables.produtos import lista_de_produtos
+from database.tables.catalogo import lista_de_produtos
 
 def update_menu_option(option_menu):
         opcoes=['selecionar']

@@ -1,7 +1,7 @@
 import tkinter as tk
 from widgets.menu_option import *
 from widgets.options import *
-from database.tables.produtos import lista_de_produtos
+from database.tables.catalogo import lista_de_produtos
 from widgets.descontos import adicionar_desconto
 
 def confirmar(frame):

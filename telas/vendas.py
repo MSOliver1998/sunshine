@@ -1,5 +1,5 @@
 import tkinter as tk
-from database.tables.produtos import *
+from database.tables.catalogo import *
 from colors import vendas
 from functions import *
 from lista import *
